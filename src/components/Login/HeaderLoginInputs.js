@@ -1,17 +1,25 @@
-import React, { Fragment } from "react";
-import classes from './HeaderLoginInputs.module.css';
+import React from "react";
+import classes from "./HeaderLoginInputs.module.css";
 
-
-const HeaderLoginInput = props => {
-
-    return(
-        <Fragment>
-            <div className={`${classes.control} ${props.isValid === false ? classes.invalid : ''}`}>
-                <label htmlFor = {props.id}>{props.label}</label>
-                <input type = {props.type} id = {props.id} value = {props.value} onChange = {props.onChange} onBlur = {props.onBlur} />
-            </div>
-        </Fragment>
-    )
+const HeaderLoginInput = (props) => {
+  return (
+    <>
+      <div
+        className={`${classes.control} ${
+          props.isValid === false ? classes.invalid : ""
+        }`}
+      >
+        <label htmlFor={props.id}>{props.label}</label>
+        <input
+          type={props.type}
+          id={props.id}
+          value={props.value}
+          onChange={props.onChange}
+          onBlur={props.onBlur}
+        />
+      </div>
+    </>
+  );
 };
 
 export default HeaderLoginInput;

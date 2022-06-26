@@ -1,26 +1,25 @@
-import React, { Fragment, useState } from 'react';
-import Home from './components/Home/Home';
-import Header from './components/Layout/Header';
-import Login from './components/Login/Login';
-
+import React, { useState } from "react";
+import Home from "./components/Home/Home";
+import Header from "./components/Layout/Header";
+import Login from "./components/Login/Login";
 
 function App() {
-const [loginModalIsShown, setLoginModal] = useState(false);
-  
-const showLoginModule = () =>{
-  setLoginModal(true)
-  }
+  const [loginModalIsShown, setLoginModal] = useState(false);
 
-const hideLoginModule = () =>{
-  setLoginModal(false)
-}
+  const showLoginModule = () => {
+    setLoginModal(true);
+  };
+
+  const hideLoginModule = () => {
+    setLoginModal(false);
+  };
 
   return (
-    <Fragment>
-      {loginModalIsShown && <Login onClose={hideLoginModule}/>}
-      <Header onShowLoginModal = {showLoginModule}/>
+    <>
+      {loginModalIsShown && <Login onClose={hideLoginModule} />}
+      <Header onShowLoginModal={showLoginModule} />
       <Home />
-    </Fragment>
+    </>
   );
 }
 
