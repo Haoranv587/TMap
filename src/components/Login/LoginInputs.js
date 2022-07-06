@@ -1,7 +1,7 @@
 import React from "react";
-import classes from "./HeaderLoginInputs.module.css";
+import classes from "./LoginInputs.module.css";
 
-const HeaderLoginInput = (props) => {
+const LoginInput = React.forwardRef((props, ref) => {
   return (
     <>
       <div
@@ -11,6 +11,7 @@ const HeaderLoginInput = (props) => {
       >
         <label htmlFor={props.id}>{props.label}</label>
         <input
+          ref={ref}
           type={props.type}
           id={props.id}
           value={props.value}
@@ -20,6 +21,6 @@ const HeaderLoginInput = (props) => {
       </div>
     </>
   );
-};
+});
 
-export default HeaderLoginInput;
+export default LoginInput;

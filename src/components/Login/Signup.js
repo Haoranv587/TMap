@@ -1,10 +1,10 @@
-import React, { useEffect, useReducer, useState, useRef } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import Button from "../UI/Button";
 import classes from "./Login.module.css";
 import LoginInput from "./LoginInputs";
 import LoginModal from "../UI/LoginModal";
 import { useAuth } from "../contexts/AuthContext";
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const emailReducer = (state, action) => {
   if (action.type === "USER_EMAIL_INPUT") {
@@ -31,25 +31,13 @@ const passwordReducer = (state, action) => {
 
 const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const Login = (props) => {
+export function Signup(props) {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { login } = useAuth();
+  const passwordConfirmRef = useRef();
+  const { signup, currentUser } = useAuth();
   const [error, setError] = useState("");
   const [Loading, setLoading] = useState(false);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    try {
-      setError("");
-      setLoading(true);
-      await login(emailRef.current.value, passwordRef.current.value);
-    } catch {
-      setError("Failed to sign in");
-    }
-    setLoading(false);
-  }
 
   const [formIsValid, setFormIsValid] = useState(false);
 
@@ -96,11 +84,31 @@ const Login = (props) => {
     dispatchPassword({ type: "USER_PASSWORD_BLUR" });
   };
 
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+      return setError("Password do not match");
+    }
+
+    try {
+      setError("");
+      setLoading(true);
+      await signup(emailRef.current.value, passwordRef.current.value);
+    } catch {
+      setError("Failed to create an account");
+    }
+    setLoading(false);
+  }
+  // console.log (emailState.value)
+  // console.log (passwordState.value)
+  // console.log (passwordConfirmState.value)
 
   return (
     <LoginModal className={classes.login}>
+      {currentUser && currentUser.email}
       {error && <h1>{error}</h1>}
-      <form onSubmit = {handleSubmit} >
+      <form onSubmit={handleSubmit}>
         <LoginInput
           label="Email"
           type="email"
@@ -121,15 +129,27 @@ const Login = (props) => {
           onChange={passwordChangeHandler}
           onBlur={validatePasswordHandler}
         />
+        <LoginInput
+          label="Password Confirmation"
+          type="password"
+          id="password-confirm"
+          ref={passwordConfirmRef}
+          // value={props.value}
+          // isValid={passwordConfirmState.isValid}
+          // onChange={passwordConfirmChangeHandler}
+          // onBlur={validatePasswordConfirmHandler}
+        />
         <div className={classes.actions}>
           <Button type="submit" disabled={!formIsValid || Loading}>
-            Login
+            Sign Up
           </Button>
         </div>
       </form>
-      <div>Need an Account? <Link to ='/signup'>Signup</Link> </div>
+      <div>
+        Already have an account? <Link to="/login">Login</Link>{" "}
+      </div>
     </LoginModal>
   );
-};
+}
 
-export default Login;
+export default Signup;
