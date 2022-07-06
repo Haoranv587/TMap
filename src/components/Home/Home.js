@@ -1,15 +1,13 @@
 import React from "react";
-import Card from "../UI/Card";
-import classes from "./Home.module.css";
+import Header from "../Layout/Header";
 
-const Home = (props) => {
-  return (
-    <>
-      <Card className={classes.home}>
-        <h1>more stuff</h1>
-      </Card>
-    </>
-  );
+const Home = () => {
+  return(
+  <>
+  <Header />
+  <h1>pics</h1>
+  </>
+  )
 };
 
 export default Home;

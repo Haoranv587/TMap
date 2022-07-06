@@ -4,29 +4,32 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   getAuth,
+  connectAuthEmulator,
 } from "firebase/auth";
 import app from "../../firebase";
 
 const AuthContext = React.createContext();
 
-export function useAuth() {
+export const useAuth = () => {
   return useContext(AuthContext);
-}
+};
 
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
-  function signup(email, password) {
+  const signup = (email, password) => {
     return createUserWithEmailAndPassword(email, password);
-  }
+  };
 
-  function login(email, password) {
+  const login = (email, password) => {
     return signInWithEmailAndPassword(email, password);
-  }
+  };
 
   useEffect(() => {
     const authInstance = getAuth(app);
+    connectAuthEmulator(authInstance, "http://localhost:9099");
+
     const unsubscribe = onAuthStateChanged(authInstance, (user) => {
       setCurrentUser(user);
       setLoading(false);
@@ -47,4 +50,4 @@ export function AuthProvider({ children }) {
       {!loading && children}
     </AuthContext.Provider>
   );
-}
+};

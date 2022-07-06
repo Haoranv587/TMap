@@ -4,7 +4,7 @@ import classes from "./Login.module.css";
 import LoginInput from "./LoginInputs";
 import LoginModal from "../UI/LoginModal";
 import { useAuth } from "../contexts/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const emailReducer = (state, action) => {
   if (action.type === "USER_EMAIL_INPUT") {
@@ -38,8 +38,8 @@ export function Signup(props) {
   const { signup, currentUser } = useAuth();
   const [error, setError] = useState("");
   const [Loading, setLoading] = useState(false);
-
   const [formIsValid, setFormIsValid] = useState(false);
+  const navigate = useNavigate();
 
   const [emailState, dispatchEmail] = useReducer(emailReducer, {
     value: "",
@@ -84,7 +84,7 @@ export function Signup(props) {
     dispatchPassword({ type: "USER_PASSWORD_BLUR" });
   };
 
-  async function handleSubmit(e) {
+  async function submitHandler(e) {
     e.preventDefault();
 
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
@@ -95,6 +95,7 @@ export function Signup(props) {
       setError("");
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value);
+      navigate("/dashboard");
     } catch {
       setError("Failed to create an account");
     }
@@ -108,7 +109,7 @@ export function Signup(props) {
     <LoginModal className={classes.login}>
       {currentUser && currentUser.email}
       {error && <h1>{error}</h1>}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={submitHandler}>
         <LoginInput
           label="Email"
           type="email"

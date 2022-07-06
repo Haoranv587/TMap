@@ -5,6 +5,7 @@ import Home from "./components/Home/Home";
 import Login from "./components/Login/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Signup from "./components/Login/Signup";
+import Dashboard from "./components/Home/Dashboard";
 
 function App() {
   // const [loginModalIsShown, setLoginModal] = useState(false);
@@ -24,6 +25,7 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           {/* {loginModalIsShown && <Signup onClose={hideLoginModule} />} */}
         </Routes>
         {/* <Header onShowLoginModal={showLoginModule} />
