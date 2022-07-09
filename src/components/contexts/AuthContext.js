@@ -4,11 +4,13 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   getAuth,
-  connectAuthEmulator,
+  // connectAuthEmulator,
+  signOut,
 } from "firebase/auth";
 import app from "../../firebase";
 
 const AuthContext = React.createContext();
+const authInstance = getAuth(app);
 
 export const useAuth = () => {
   return useContext(AuthContext);
@@ -19,16 +21,19 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const signup = (email, password) => {
-    return createUserWithEmailAndPassword(email, password);
+    return createUserWithEmailAndPassword(authInstance, email, password);
   };
 
   const login = (email, password) => {
-    return signInWithEmailAndPassword(email, password);
+    return signInWithEmailAndPassword(authInstance, email, password);
+  };
+
+  const logout = () => {
+    return signOut(authInstance);
   };
 
   useEffect(() => {
-    const authInstance = getAuth(app);
-    connectAuthEmulator(authInstance, "http://localhost:9099");
+    // connectAuthEmulator(authInstance, "http://localhost:9099");
 
     const unsubscribe = onAuthStateChanged(authInstance, (user) => {
       setCurrentUser(user);
@@ -43,6 +48,7 @@ export const AuthProvider = ({ children }) => {
     currentUser,
     login,
     signup,
+    logout,
   };
 
   return (

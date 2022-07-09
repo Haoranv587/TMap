@@ -98,6 +98,7 @@ const Login = (props) => {
 
   return (
     <LoginModal className={classes.login}>
+      <h1>Log in</h1>
       {error && <h1>{error}</h1>}
       <form onSubmit={submitHandler}>
         <LoginInput

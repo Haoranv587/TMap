@@ -94,6 +94,7 @@ export function Signup(props) {
     try {
       setError("");
       setLoading(true);
+      // await signup(emailRef.current.value, passwordRef.current.value);
       await signup(emailRef.current.value, passwordRef.current.value);
       navigate("/dashboard");
     } catch {
@@ -101,12 +102,14 @@ export function Signup(props) {
     }
     setLoading(false);
   }
-  // console.log (emailState.value)
-  // console.log (passwordState.value)
+
+  // console.log (emailRef.current.value)
+  // console.log(emailState.value);
   // console.log (passwordConfirmState.value)
 
   return (
     <LoginModal className={classes.login}>
+      <h1>Sign up</h1>
       {currentUser && currentUser.email}
       {error && <h1>{error}</h1>}
       <form onSubmit={submitHandler}>
