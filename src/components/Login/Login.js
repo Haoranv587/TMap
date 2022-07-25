@@ -1,132 +1,109 @@
-import React, { useEffect, useReducer, useState, useRef } from "react";
+import React, { useRef, useState } from "react";
 import Button from "../UI/Button";
 import classes from "./Login.module.css";
-import LoginInput from "./LoginInputs";
 import LoginModal from "../UI/LoginModal";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-
-const emailReducer = (state, action) => {
-  if (action.type === "USER_EMAIL_INPUT") {
-    return { value: action.val, isValid: !!action.val.match(emailFormat) };
-  }
-
-  if (action.type === "USER_EMAIL_BLUR") {
-    return { value: state.value, isValid: !!state.value.match(emailFormat) };
-  }
-
-  return { value: "", isValid: null };
-};
-
-const passwordReducer = (state, action) => {
-  if (action.type === "USER_PASSSWORD_INPUT") {
-    return { value: action.val, isValid: action.val.trim().length > 6 };
-  }
-
-  if (action.type === "USER_PASSWORD_BLUR") {
-    return { value: state.value, isValid: state.value.trim().length > 6 };
-  }
-  return { value: "", isValid: null };
-};
-
-const emailFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import ReactHookFormInputs from "./ReactHookFormInputs";
+import { useForm } from "react-hook-form";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
 const Login = (props) => {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { login } = useAuth();
+  const { login, currentUser } = useAuth();
   const [error, setError] = useState("");
   const [Loading, setLoading] = useState(false);
-  const [formIsValid, setFormIsValid] = useState(false);
+  const [passwordEye, setPasswordEye] = useState(false);
   const navigate = useNavigate();
 
-  const [emailState, dispatchEmail] = useReducer(emailReducer, {
-    value: "",
-    isValid: null,
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    watch,
+  } = useForm({
+    mode: "onTouched",
   });
-
-  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
-    value: "",
-    isValid: null,
-  });
-
-  const { isValid: emailIsValid } = emailState;
-  const { isValid: passwordIsValid } = passwordState;
-
-  useEffect(() => {
-    const timeIdentifier = setTimeout(() => {
-      console.log("Checking form validity");
-      setFormIsValid(emailIsValid && passwordIsValid);
-    }, 500);
-    return () => {
-      console.log("CLEANUP");
-      clearTimeout(timeIdentifier);
-    };
-  }, [emailIsValid, passwordIsValid]);
-
-  const emailChangeHandler = (event) => {
-    dispatchEmail({ type: "USER_EMAIL_INPUT", val: event.target.value });
-    setFormIsValid(
-      event.target.value.match(emailFormat) && passwordState.isValid
-    );
-  };
-
-  const passwordChangeHandler = (event) => {
-    dispatchPassword({ type: "USER_PASSSWORD_INPUT", val: event.target.value });
-    setFormIsValid(emailState.isValid && event.target.value.trim().length > 6);
-  };
-
-  const validateEmailHandler = () => {
-    dispatchEmail({ type: "USER_EMAIL_BLUR" });
-  };
-  const validatePasswordHandler = () => {
-    dispatchPassword({ type: "USER_PASSWORD_BLUR" });
-  };
-  async function submitHandler(e) {
+  const onSubmit = (data) => alert(JSON.stringify(data));
+  //check Password event
+  emailRef.current = watch("email", "");
+  passwordRef.current = watch("password", "");
+  //Firebase log in event
+  const ClickHandler = (e) => {
     e.preventDefault();
 
     try {
       setError("");
       setLoading(true);
-      await login(emailRef.current.value, passwordRef.current.value);
-      navigate("/dashboard");
+      login(emailRef.current, passwordRef.current).then(navigate("/dashboard"));
     } catch {
       setError("Failed to log in");
     }
     setLoading(false);
-  }
+  };
+  // handle password eye
+  const passwordClickHandler = () => {
+    setPasswordEye(!passwordEye);
+  };
 
   return (
     <LoginModal className={classes.login}>
-      <h1>Log in</h1>
-      {error && <h1>{error}</h1>}
-      <form onSubmit={submitHandler}>
-        <LoginInput
-          label="Email"
+      <h1>Login</h1>
+      {currentUser && currentUser.email}
+      {error && <h3>{error}</h3>}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <ReactHookFormInputs
+          register={register}
+          errors={errors}
+          fieldName="email"
           type="email"
+          label="Email"
           id="email"
-          ref={emailRef}
-          value={emailState.value}
-          isValid={emailState.isValid}
-          onChange={emailChangeHandler}
-          onBlur={validateEmailHandler}
+          isRequired={true}
+          message="Valid email is required"
+          pattern={/^[^\s@]+@[^\s@]+\.[^\s@]+$/}
         />
-        <LoginInput
-          label="Password"
-          type="password"
-          id="password"
-          ref={passwordRef}
-          value={passwordState.value}
-          isValid={passwordState.isValid}
-          onChange={passwordChangeHandler}
-          onBlur={validatePasswordHandler}
-        />
+        <div>
+          <ReactHookFormInputs
+            register={register}
+            errors={errors}
+            fieldName="password"
+            type={passwordEye === false ? "password" : "text"}
+            label="Password"
+            id="password"
+            isRequired={true}
+            message="Password should be at least 6 characters long, 
+            should have 1 upper case and 1 lower case, 1 number and 1 special character"
+            pattern={
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+            }
+            minimLength={6}
+            maximLength={20}
+            showPasswordEye={
+              passwordEye === false ? (
+                <AiFillEyeInvisible onClick={passwordClickHandler} />
+              ) : (
+                <AiFillEye onClick={passwordClickHandler} />
+              )
+            }
+          />
+        </div>
+
         <div className={classes.actions}>
-          <Button type="submit" disabled={!formIsValid || Loading}>
+          <Button
+            type="submit"
+            disabled={!isValid || Loading}
+            onClick={ClickHandler}
+          >
             Login
           </Button>
         </div>
+        <div>
+          <Link to="/forgot-password">Forgot Password?</Link>{" "}
+        </div>
       </form>
+
       <div>
         Need an Account? <Link to="/signup">Signup</Link>{" "}
       </div>

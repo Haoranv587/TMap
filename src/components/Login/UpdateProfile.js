@@ -8,10 +8,10 @@ import ReactHookFormInputs from "./ReactHookFormInputs";
 import { useForm } from "react-hook-form";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 
-const Signup = (props) => {
+const UpdateProfile = (props) => {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { signup, currentUser } = useAuth();
+  const { updateEmail, updatePassword, currentUser } = useAuth();
   const [error, setError] = useState("");
   const [Loading, setLoading] = useState(false);
   const [passwordEye, setPasswordEye] = useState(false);
@@ -34,16 +34,26 @@ const Signup = (props) => {
   const ClickHandler = (e) => {
     e.preventDefault();
 
-    try {
-      setError("");
-      setLoading(true);
-      signup(emailRef.current, passwordRef.current).then(
-        navigate("/dashboard")
-      );
-    } catch {
-      setError("Failed to create an account");
+    const promises = [];
+    setLoading(true);
+    setError("");
+    if (emailRef.current !== currentUser.email) {
+      promises.push(updateEmail(emailRef.current));
     }
-    setLoading(false);
+    if (passwordRef.current) {
+      promises.push(updatePassword(passwordRef.current));
+    }
+
+    Promise.all(promises)
+      .then(() => {
+        navigate("/dashboard");
+      })
+      .catch(() => {
+        setError("Failed to update account");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
   // handle password eye
   const passwordClickHandler = () => {
@@ -56,8 +66,8 @@ const Signup = (props) => {
 
   return (
     <LoginModal className={classes.login}>
-      <h1>Sign up</h1>
-      {/* {currentUser && currentUser.email} */}
+      <h1>Update Profile</h1>
+      {currentUser && currentUser.email}
       {error && <h3>{error}</h3>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <ReactHookFormInputs
@@ -121,16 +131,16 @@ const Signup = (props) => {
             disabled={!isValid || Loading}
             onClick={ClickHandler}
           >
-            Sign up
+            Update
           </Button>
         </div>
       </form>
 
       <div>
-        Already have an account? <Link to="/login">Login</Link>{" "}
+        <Link to="/">Cancel</Link>{" "}
       </div>
     </LoginModal>
   );
 };
 
-export default Signup;
+export default UpdateProfile;

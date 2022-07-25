@@ -4,19 +4,22 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   getAuth,
-  // connectAuthEmulator,
   signOut,
+  sendPasswordResetEmail,
+  updateEmail,
+  updatePassword,
 } from "firebase/auth";
 import app from "../../firebase";
 
 const AuthContext = React.createContext();
 const authInstance = getAuth(app);
+// const user = authInstance.currentUser
 
-export const useAuth = () => {
+const useAuth = () => {
   return useContext(AuthContext);
 };
 
-export const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -32,9 +35,19 @@ export const AuthProvider = ({ children }) => {
     return signOut(authInstance);
   };
 
-  useEffect(() => {
-    // connectAuthEmulator(authInstance, "http://localhost:9099");
+  const resetPassword = (email) => {
+    return sendPasswordResetEmail(authInstance, email);
+  };
 
+  const updateEmail = (email) => {
+    return updateEmail(authInstance.currentUser, email);
+  };
+
+  const updatePassword = (password) => {
+    return updatePassword(authInstance, password);
+  };
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(authInstance, (user) => {
       setCurrentUser(user);
       setLoading(false);
@@ -49,6 +62,9 @@ export const AuthProvider = ({ children }) => {
     login,
     signup,
     logout,
+    resetPassword,
+    updateEmail,
+    updatePassword,
   };
 
   return (
@@ -57,3 +73,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export { useAuth, AuthProvider };

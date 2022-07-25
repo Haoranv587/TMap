@@ -1,46 +1,62 @@
-
 .control {
-    margin: 1rem 0;
-    display: flex;
-    align-items: stretch;
-    flex-direction: column;
-  }
-  
-  .control label,
-  .control input {
-    display: block;
-  }
-  
-  .control label {
-    font-weight: bold;
-    flex: 1;
-    color: #464646;
-    margin-bottom: 0.5rem;
-  }
-  
-  .control input {
-    flex: 3;
-    font: inherit;
-    padding: 0.35rem 0.35rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-  
-  .control input:focus {
-    outline: none;
-    border-color: #4f005f;
-    background: #f6dbfc;
-  }
-  
-  .control.invalid input {
-    border-color: red;
-    background: #fbdada;
-  }
-  
+  margin: 1rem 0;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.control .container {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  width: 100%;
+}
+
+.control .container label {
+  font-weight: bold;
+  flex: 1;
+  color: #464646;
+  margin-bottom: 0.5rem;
+}
+
+.control .passwordContainer {
+  margin: 1rem 0;
+  display: flex;
+}
+
+.control .container .passwordContainer input {
+  flex: 3;
+  font: inherit;
+  padding: 0.35rem 0.35rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.control .container .passwordContainer input:focus {
+  outline: none;
+  border-color: #4f005f;
+  background: #f6dbfc;
+}
+.control .container .passwordContainer input:invalid {
+  border-color: red;
+  background: #fbdada;
+}
+
+.control .container .passwordContainer i {
+  position: relative;
+  right: 20px;
+  top: 7px;
+}
+
+.control .container .error {
+  flex: 1;
+  color: #464646;
+  margin-bottom: 0.5rem;
+}
+
 @media (min-width: 768px) {
-    .control {
-      align-items: center;
-      flex-direction: row;
-    }
-  
+  .control {
+    align-items: center;
+    flex-direction: row;
   }
+}
