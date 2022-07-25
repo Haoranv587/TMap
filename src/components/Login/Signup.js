@@ -57,7 +57,7 @@ const Signup = (props) => {
   return (
     <LoginModal className={classes.login}>
       <h1>Sign up</h1>
-      {/* {currentUser && currentUser.email} */}
+      {currentUser && currentUser.email}
       {error && <h3>{error}</h3>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <ReactHookFormInputs

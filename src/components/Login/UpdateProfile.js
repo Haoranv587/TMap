@@ -11,7 +11,7 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 const UpdateProfile = (props) => {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { updateEmail, updatePassword, currentUser } = useAuth();
+  const { updateCurrentEmail, updateCurrentPassword, currentUser } = useAuth();
   const [error, setError] = useState("");
   const [Loading, setLoading] = useState(false);
   const [passwordEye, setPasswordEye] = useState(false);
@@ -38,10 +38,10 @@ const UpdateProfile = (props) => {
     setLoading(true);
     setError("");
     if (emailRef.current !== currentUser.email) {
-      promises.push(updateEmail(emailRef.current));
+      promises.push(updateCurrentEmail(emailRef.current));
     }
     if (passwordRef.current) {
-      promises.push(updatePassword(passwordRef.current));
+      promises.push(updateCurrentPassword(passwordRef.current));
     }
 
     Promise.all(promises)

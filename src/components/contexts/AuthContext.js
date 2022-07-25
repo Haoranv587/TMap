@@ -39,11 +39,11 @@ const AuthProvider = ({ children }) => {
     return sendPasswordResetEmail(authInstance, email);
   };
 
-  const updateEmail = (email) => {
-    return updateEmail(authInstance.currentUser, email);
+  const updateCurrentEmail = (email) => {
+    return updateEmail(authInstance, email);
   };
 
-  const updatePassword = (password) => {
+  const updateCurrentPassword = (password) => {
     return updatePassword(authInstance, password);
   };
 
@@ -63,8 +63,8 @@ const AuthProvider = ({ children }) => {
     signup,
     logout,
     resetPassword,
-    updateEmail,
-    updatePassword,
+    updateCurrentEmail,
+    updateCurrentPassword,
   };
 
   return (

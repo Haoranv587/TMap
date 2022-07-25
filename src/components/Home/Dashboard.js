@@ -32,6 +32,6 @@ const Dashboard = () => {
       <Button onClick={logoutHandler}>Logout</Button>
     </>
   );
-}
+};
 
 export default Dashboard;
